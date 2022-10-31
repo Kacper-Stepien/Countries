@@ -37,6 +37,7 @@ header {
 }
 
 h1 {
+    cursor: default;
     font-weight: 600;
     font-size: 2.2rem;
 }
@@ -50,10 +51,6 @@ h1 {
 
 .mode-btn i {
     margin-right: 0.5rem;
-}
-
-main {
-    padding: 0 4rem 4rem 4rem;
 }
 
 nav {
@@ -80,6 +77,10 @@ nav {
     flex-grow: 1;
 }
 
+.search-input:active .input-area {
+    transform: translateY(-3px);
+}
+
 .input-area i {
     margin-right: 1.5rem;
 }
@@ -96,8 +97,9 @@ nav {
 
 main {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     flex-wrap: wrap;
+    padding: 0 4rem 4rem 4rem;
 }
 
 .card {
@@ -107,10 +109,11 @@ main {
     background-color: var(--elements-light-mode);
     border-radius: 5px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    height: 26rem;
+    height: 34rem;
     width: 22rem;
     overflow: hidden;
     transition: all .3s ease-in;
+    margin: 3rem;
 }
 
 .card:hover {
@@ -118,11 +121,19 @@ main {
 }
 
 .card-top-part {
-    height: 50%;
-    background-image: url("g.jpg");
+    height: 14rem;
+    /* background-image: url("g.jpg");
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: cover; */
+
+}
+
+.card-top-part img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 
 .card-bottom-part {
