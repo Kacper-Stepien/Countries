@@ -5,6 +5,9 @@ const toggleDarkModeBtn = document.getElementById('toggle-dark-mode');
 const searchInput = document.getElementById('search-input');
 const searchArea = document.getElementById('input-area');
 const filterInput = document.getElementById('filter-input');
+const modalOverflow = document.querySelector('.modal-overflow');
+const modal = document.querySelector('.modal');
+const closeModalBtn = document.querySelector('#close-modal-btn');
 
 const clearMainDiv = function () {
     mainDiv.innerHTML = "";
@@ -33,7 +36,9 @@ const renderAllCountries = async function () {
         data.forEach(country => {
             const markup = createCountryMarkup(country);
             mainDiv.insertAdjacentHTML('beforeend', markup);
-        })
+        });
+
+        addEventListenersToCards();
     }
     catch (error) {
         let message = error.message;
@@ -43,6 +48,17 @@ const renderAllCountries = async function () {
         renderError(message);
         console.log(message);
     }
+}
+
+const addEventListenersToCards = function () {
+    const allCards = document.querySelectorAll('.card');
+    allCards.forEach(card => {
+        card.addEventListener('click', function (e) {
+            let element = e.target.closest('.card');
+            console.log(element.dataset.name);
+            handleModal(element.dataset.name);
+        });
+    })
 }
 
 const renderAllCountriesFromRegion = async function (region) {
@@ -57,6 +73,7 @@ const renderAllCountriesFromRegion = async function (region) {
             const markup = createCountryMarkup(country);
             mainDiv.insertAdjacentHTML('beforeend', markup);
         });
+        addEventListenersToCards();
     }
     catch (error) {
         let message = error.message;
@@ -79,6 +96,7 @@ const renderOneCountry = async function (country) {
         console.log(...data);
         const markup = createCountryMarkup(...data);
         mainDiv.insertAdjacentHTML('afterbegin', markup);
+        addEventListenersToCards();
     }
     catch (error) {
         let message = error.message;
@@ -91,8 +109,9 @@ const renderOneCountry = async function (country) {
 }
 
 const createCountryMarkup = function (data) {
+    console.log(data);
     const markup = `
-        <div class="card">
+        <div class="card" data-name="${data.altSpellings[0]}">
             <div class="card-top-part">
                 <img src="${data.flags.png}" alt="${data.name.common} flag">
             </div>
@@ -104,6 +123,7 @@ const createCountryMarkup = function (data) {
             </div>
         </div>
     `;
+    console.log(markup);
     return markup;
 }
 
@@ -127,7 +147,63 @@ const init = function () {
     renderAllCountries();
 }
 
-// Event Listeners
+const createModalMarkup = function (data) {
+    console.log(data);
+    let markup = `
+        <div div class="modal-left-side" >
+            <img src="${data.flags.png}" alt="${data.name.common} flag" class="modal-photo">
+        </div>
+        <div class="modal-right-side">
+            <div class="modal-country-name" id="modal-country-name">
+                ${data.name}
+            </div>
+            <div class="modal-info">
+                <p>Native Name: <em class="modal-data">${data.nativeName}</em></p>
+                <p>Population: <em class="modal-data">${data.population}</em></p>
+                <p>Region: <em class="modal-data">${data.region}</em></p>
+                <p>Sub Region: <em class="modal-data">${data.subregion}</em></p>
+                <p>Capital: <em class="modal-data">${data.capital}</em></p>
+                <p>Top Level Domain: <em class="modal-data">${data.topLevelDomain}</em></p>
+                <p>Currencies: <em class="modal-data">${data.currencies[0].name}</em></p>
+                <p>Languages: <em class="modal-data">${data.languages[0].name}</em></p>
+            </div>
+            <div class="modal-border-countries">
+                <p>Border Countries: </p>
+                ${generateBorderCountryMarkup(data.borders)}
+            </div>
+        </div>
+    `;
+    return markup;
+}
+
+const generateBorderCountryMarkup = function (countries) {
+    if (!countries) {
+        return `<p>No border countries</p>`;
+    }
+    let markup = "";
+    countries.forEach(country => {
+        markup += `<button class="border-country">${country}</button>`;
+    });
+    return markup;
+}
+
+const handleModal = async function (country) {
+    try {
+        const response = await fetch(`https://restcountries.com/v2/alpha?codes=${country}`);
+        if (!response.ok) {
+            throw new Error("Ups... Country not found.");
+        }
+        const data = await response.json();
+        const markup = createModalMarkup(...data);
+        modal.insertAdjacentHTML('beforeend', markup);
+        modalOverflow.classList.remove('hidden');
+    }
+    catch {
+        renderError("There is a problem. Try again later.")
+    }
+}
+
+// Event Listeners  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 searchInput.addEventListener('search', function (e) {
     e.preventDefault();
     const country = searchInput.value.toLowerCase();
@@ -159,5 +235,19 @@ toggleDarkModeBtn.addEventListener('click', () => {
         switchOfDarkMode();
     }
 });
+
+const closeModal = function () {
+    modalOverflow.classList.add('hidden');
+    let rightSide = modal.querySelector('.modal-right-side');
+    let leftSide = modal.querySelector('.modal-left-side');
+    modal.removeChild(rightSide);
+    modal.removeChild(leftSide);
+}
+
+closeModalBtn.addEventListener('click', closeModal);
+
+window.addEventListener('click', e => e.target == modal ? false : closeModal());
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 init();

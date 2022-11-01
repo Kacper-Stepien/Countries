@@ -185,3 +185,119 @@ main {
 .error {
     font-size: 1.8rem;
 }
+
+/* Modal ///////////////////////////////////////////////////////////////////////////////////////*/
+
+.modal-overflow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+}
+
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--elements-color);
+    border-radius: 5px;
+    padding: 2rem;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 1000px;
+    max-width: 90%;
+    height: 70%;
+
+    font-size: 1.4rem;
+    color: var(--font-color);
+}
+
+.close-modal-btn {
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    padding: 0.5rem;
+    background-color: inherit;
+    border: none;
+    outline: none;
+    font-size: 2.4rem;
+}
+
+.modal-left-side {
+    width: 40%;
+    padding: 2rem;
+    justify-self: flex-end;
+}
+
+.modal-photo {
+    max-width: 100%;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.modal-right-side {
+    width: 60%;
+    padding: 2rem;
+    margin-left: 2rem;
+}
+
+.modal-country-name {
+    font-weight: bold;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.modal-info {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.modal-info p {
+    width: 45%;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.modal-data {
+    font-weight: normal;
+    font-style: normal;
+}
+
+.modal-border-countries {
+    margin-top: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.modal-border-countries p {
+    margin-right: 1.5rem;
+}
+
+.border-country {
+    cursor: pointer;
+    margin: 0.5rem;
+    padding: 0.5rem 1.5rem;
+    background-color: var(--background-color);
+    border: none;
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+    transition: all .2s ease-in-out;
+}
+
+.border-country:hover {
+    transform: translateY(-3px);
+}
+
+.hidden {
+    display: none;
+}
