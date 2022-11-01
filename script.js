@@ -1,6 +1,7 @@
 'use strict';
 
 const mainDiv = document.getElementById('main-div');
+const toggleDarkModeBtn = document.getElementById('toggle-dark-mode');
 const searchInput = document.getElementById('search-input');
 const searchArea = document.getElementById('input-area');
 const filterInput = document.getElementById('filter-input');
@@ -71,12 +72,29 @@ const createCountryMarkup = function (data) {
     return markup;
 }
 
+const switchOnDarkMode = function () {
+    document.body.classList.add('dark-mode');
+    toggleDarkModeBtn.innerHTML = `<i class="fa-regular fa-sun"></i>Light Mode`;
+    localStorage.setItem('DarkMode', "on");
+}
+
+const switchOfDarkMode = function () {
+    document.body.classList.remove('dark-mode');
+    toggleDarkModeBtn.innerHTML = `<i class="fa-regular fa-moon"></i>Dark Mode`;
+    localStorage.setItem('DarkMode', "off");
+}
+
 const init = function () {
+    let darkMode = localStorage.getItem('DarkMode');
+    if (darkMode === "on") {
+        switchOnDarkMode();
+    }
     renderAllCountries();
 }
 
 // Event Listeners
-searchInput.addEventListener('search', function () {
+searchInput.addEventListener('search', function (e) {
+    e.preventDefault();
     const country = searchInput.value.toLowerCase();
     renderOneCountry(country);
 })
@@ -95,5 +113,16 @@ filterInput.addEventListener('change', function () {
 searchArea.addEventListener('click', function () {
     searchInput.focus();
 })
+
+toggleDarkModeBtn.addEventListener('click', () => {
+    let darkMode = localStorage.getItem('DarkMode');
+
+    if (darkMode === "off") {
+        switchOnDarkMode();
+    }
+    else {
+        switchOfDarkMode();
+    }
+});
 
 init();
