@@ -11,18 +11,37 @@ const clearMainDiv = function () {
     searchInput.value = "";
 }
 
+const renderError = function (message) {
+    clearMainDiv();
+    const errorMarkup = `
+        <div class="error">
+            <div class="error-header">Error</div>
+            ${message}
+        </div>
+    `;
+    mainDiv.insertAdjacentHTML('afterbegin', errorMarkup);
+}
+
 const renderAllCountries = async function () {
     clearMainDiv();
     try {
         const response = await fetch('https://restcountries.com/v3.1/all');
+        if (!response.ok) {
+            throw new Error("Ups... There is a problem. Try again later.");
+        }
         const data = await response.json();
         data.forEach(country => {
             const markup = createCountryMarkup(country);
             mainDiv.insertAdjacentHTML('beforeend', markup);
         })
     }
-    catch (err) {
-        console.log("coś nie tak");
+    catch (error) {
+        let message = error.message;
+        if (error.message === "Failed to fetch") {
+            message = "You are offline. Connetct with Internet and try again.";
+        }
+        renderError(message);
+        console.log(message);
     }
 }
 
@@ -30,6 +49,9 @@ const renderAllCountriesFromRegion = async function (region) {
     clearMainDiv();
     try {
         const response = await fetch(`https://restcountries.com/v3.1/region/${region}`);
+        if (!response.ok) {
+            throw new Error("Ups... There is a problem. Try again later.");
+        }
         const data = await response.json();
         data.forEach(country => {
             const markup = createCountryMarkup(country);
@@ -37,7 +59,12 @@ const renderAllCountriesFromRegion = async function (region) {
         });
     }
     catch (error) {
-        console.log(error);
+        let message = error.message;
+        if (error.message === "Failed to fetch") {
+            message = "You are offline. Connetct with Internet and try again.";
+        }
+        renderError(message);
+        console.log(message);
     }
 }
 
@@ -45,13 +72,21 @@ const renderOneCountry = async function (country) {
     clearMainDiv();
     try {
         const response = await fetch(`https://restcountries.com/v2/name/${country}`);
+        if (!response.ok) {
+            throw new Error("Ups... Country not found.");
+        }
         const data = await response.json();
         console.log(...data);
         const markup = createCountryMarkup(...data);
         mainDiv.insertAdjacentHTML('afterbegin', markup);
     }
     catch (error) {
-        console.log(error);
+        let message = error.message;
+        if (error.message === "Failed to fetch") {
+            message = "You are offline. Connetct with Internet and try again.";
+        }
+        renderError(message);
+        console.log(message);
     }
 }
 
