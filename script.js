@@ -30,30 +30,6 @@ const renderError = function (message) {
     mainDiv.insertAdjacentHTML('afterbegin', errorMarkup);
 }
 
-const renderAllCountries = async function () {
-    clearMainDiv();
-    try {
-        const response = await fetch('https://restcountries.com/v3.1/all');
-        if (!response.ok) {
-            throw new Error("Ups... There is a problem. Try again later.");
-        }
-        const data = await response.json();
-        data.forEach(country => {
-            const markup = createCountryMarkup(country);
-            mainDiv.insertAdjacentHTML('beforeend', markup);
-        });
-
-        addEventListenersToCards();
-    }
-    catch (error) {
-        let message = error.message;
-        if (error.message === "Failed to fetch") {
-            message = "You are offline. Connetct with Internet and try again.";
-        }
-        renderError(message);
-    }
-}
-
 const addEventListenersToCards = function () {
     const allCards = document.querySelectorAll('.card');
     allCards.forEach(card => {
@@ -64,14 +40,19 @@ const addEventListenersToCards = function () {
     })
 }
 
-const renderAllCountriesFromRegion = async function (region) {
+const getData = async function (link) {
+    const response = await fetch(link);
+    if (!response.ok) {
+        throw new Error("There is a problem with fetching data.");
+    }
+    const data = await response.json();
+    return data;
+}
+
+const renderAllCountries = async function () {
     clearMainDiv();
     try {
-        const response = await fetch(`https://restcountries.com/v3.1/region/${region}`);
-        if (!response.ok) {
-            throw new Error("Ups... There is a problem. Try again later.");
-        }
-        const data = await response.json();
+        const data = await getData('https://restcountries.com/v3.1/all');
         data.forEach(country => {
             const markup = createCountryMarkup(country);
             mainDiv.insertAdjacentHTML('beforeend', markup);
@@ -80,9 +61,30 @@ const renderAllCountriesFromRegion = async function (region) {
     }
     catch (error) {
         let message = error.message;
-        if (error.message === "Failed to fetch") {
+        if (error.message === "Failed to fetch")
             message = "You are offline. Connetct with Internet and try again.";
-        }
+        else
+            message = "Ups... There is a problem. Try again later.";
+        renderError(message);
+    }
+}
+
+const renderAllCountriesFromRegion = async function (region) {
+    clearMainDiv();
+    try {
+        const data = await getData(`https://restcountries.com/v3.1/region/${region}`);
+        data.forEach(country => {
+            const markup = createCountryMarkup(country);
+            mainDiv.insertAdjacentHTML('beforeend', markup);
+        });
+        addEventListenersToCards();
+    }
+    catch (error) {
+        let message = error.message;
+        if (error.message === "Failed to fetch")
+            message = "You are offline. Connetct with Internet and try again.";
+        else
+            message = "Ups... There is a problem. Try again later.";
         renderError(message);
     }
 }
@@ -90,20 +92,17 @@ const renderAllCountriesFromRegion = async function (region) {
 const renderOneCountry = async function (country) {
     clearMainDiv();
     try {
-        const response = await fetch(`https://restcountries.com/v2/name/${country}`);
-        if (!response.ok) {
-            throw new Error("Ups... Country not found.");
-        }
-        const data = await response.json();
+        const data = await getData(`https://restcountries.com/v2/name/${country}`);
         const markup = createCountryMarkup(...data);
         mainDiv.insertAdjacentHTML('afterbegin', markup);
         addEventListenersToCards();
     }
     catch (error) {
         let message = error.message;
-        if (error.message === "Failed to fetch") {
+        if (error.message === "Failed to fetch")
             message = "You are offline. Connetct with Internet and try again.";
-        }
+        else
+            message = "Ups... Country not found.";
         renderError(message);
     }
 }
@@ -135,14 +134,6 @@ const switchOfDarkMode = function () {
     document.body.classList.remove('dark-mode');
     toggleDarkModeBtn.innerHTML = `<i class="fa-regular fa-moon"></i>Dark Mode`;
     localStorage.setItem('DarkMode', "off");
-}
-
-const init = function () {
-    let darkMode = localStorage.getItem('DarkMode');
-    if (darkMode === "on") {
-        switchOnDarkMode();
-    }
-    renderAllCountries();
 }
 
 const createModalMarkup = function (data) {
@@ -184,24 +175,24 @@ const generateBorderCountryMarkup = function (countries) {
     return markup;
 }
 
+const addEventListenersToBorderCountriesBtn = function () {
+    let borderCounriesBtn = document.querySelectorAll('.border-country');
+    borderCounriesBtn.forEach(country => {
+        country.addEventListener('click', function () {
+            clearModal();
+            handleModal(country.dataset.name);
+        })
+    })
+}
+
 const handleModal = async function (country) {
     try {
-        const response = await fetch(`https://restcountries.com/v2/alpha?codes=${country}`);
-        if (!response.ok) {
-            throw new Error("Ups... Country not found.");
-        }
-        const data = await response.json();
+        const data = await getData(`https://restcountries.com/v2/alpha?codes=${country}`);
         const markup = createModalMarkup(...data);
         modal.insertAdjacentHTML('beforeend', markup);
         modalOverflow.classList.remove('hidden');
 
-        let borderCounriesBtn = document.querySelectorAll('.border-country');
-        borderCounriesBtn.forEach(country => {
-            country.addEventListener('click', function () {
-                clearModal();
-                handleModal(country.dataset.name);
-            })
-        })
+        addEventListenersToBorderCountriesBtn();
     }
     catch {
         renderError("There is a problem. Try again later.")
@@ -217,6 +208,14 @@ const clearModal = function () {
 
 const closeModal = function () {
     modalOverflow.classList.add('hidden');
+}
+
+const init = function () {
+    let darkMode = localStorage.getItem('DarkMode');
+    if (darkMode === "on") {
+        switchOnDarkMode();
+    }
+    renderAllCountries();
 }
 
 // Event Listeners  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
