@@ -9,6 +9,7 @@ const modalOverflow = document.querySelector('.modal-overflow');
 const modal = document.querySelector('.modal');
 const closeModalBtn = document.querySelector('#close-modal-btn');
 
+
 const formatNumber = function (number) {
     return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1,');
 }

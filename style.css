@@ -180,7 +180,6 @@ nav {
 }
 
 /* Modal ///////////////////////////////////////////////////////////////////////////////////////*/
-
 .modal-overflow {
     position: fixed;
     top: 0;
@@ -200,14 +199,12 @@ nav {
     border-radius: 5px;
     padding: 2rem;
     overflow: hidden;
-
     display: flex;
     align-items: center;
     justify-content: flex-start;
     width: 1000px;
     max-width: 90%;
     height: 70%;
-
     font-size: 1.4rem;
     color: var(--font-color);
 }
