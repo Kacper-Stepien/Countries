@@ -5,13 +5,6 @@
     --elements-color: hsl(0, 0%, 100%);
     --backround-color: hsl(0, 0%, 98%);
     --dark-gray: hsl(0, 0%, 52%);
-
-    /* --elements-dark-mode: hsl(209, 23%, 22%);
-    --background-dark-mode: hsl(207, 26%, 17%);
-    --font-color-light-mode: hsl(200, 15%, 8%);
-    --dark-gray: hsl(0, 0%, 52%);
-    --background-light-mode: hsl(0, 0%, 98%);
-    --elements-light-mode: hsl(0, 0%, 100%); */
 }
 
 .dark-mode {

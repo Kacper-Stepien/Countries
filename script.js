@@ -9,6 +9,10 @@ const modalOverflow = document.querySelector('.modal-overflow');
 const modal = document.querySelector('.modal');
 const closeModalBtn = document.querySelector('#close-modal-btn');
 
+const formatNumber = function (number) {
+    return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1,');
+}
+
 const clearMainDiv = function () {
     mainDiv.innerHTML = "";
     searchInput.value = "";
@@ -117,7 +121,7 @@ const createCountryMarkup = function (data) {
             </div>
             <div class="card-bottom-part">
                 <h2 class="card-title">${data.name.common ? data.name.common : data.name}</h2>
-                <p>Population: <em class="population">${data.population}</em></p>
+                <p>Population: <em class="population">${formatNumber(data.population)}</em></p>
                 <p>Region: <em class="region">${data.region}</em></p>
                 <p>Capital: <em class="capital">${data.capital}</em></p>
             </div>
@@ -159,7 +163,7 @@ const createModalMarkup = function (data) {
             </div>
             <div class="modal-info">
                 <p>Native Name: <em class="modal-data">${data.nativeName}</em></p>
-                <p>Population: <em class="modal-data">${data.population}</em></p>
+                <p>Population: <em class="modal-data">${formatNumber(data.population)}</em></p>
                 <p>Region: <em class="modal-data">${data.region}</em></p>
                 <p>Sub Region: <em class="modal-data">${data.subregion}</em></p>
                 <p>Capital: <em class="modal-data">${data.capital}</em></p>
@@ -182,7 +186,7 @@ const generateBorderCountryMarkup = function (countries) {
     }
     let markup = "";
     countries.forEach(country => {
-        markup += `<button class="border-country">${country}</button>`;
+        markup += `<button class="border-country" data-name="${country}">${country}</button>`;
     });
     return markup;
 }
@@ -197,10 +201,29 @@ const handleModal = async function (country) {
         const markup = createModalMarkup(...data);
         modal.insertAdjacentHTML('beforeend', markup);
         modalOverflow.classList.remove('hidden');
+
+        let borderCounriesBtn = document.querySelectorAll('.border-country');
+        borderCounriesBtn.forEach(country => {
+            country.addEventListener('click', function () {
+                clearModal();
+                handleModal(country.dataset.name);
+            })
+        })
     }
     catch {
         renderError("There is a problem. Try again later.")
     }
+}
+
+const clearModal = function () {
+    let rightSide = modal.querySelector('.modal-right-side');
+    let leftSide = modal.querySelector('.modal-left-side');
+    modal.removeChild(rightSide);
+    modal.removeChild(leftSide);
+}
+
+const closeModal = function () {
+    modalOverflow.classList.add('hidden');
 }
 
 // Event Listeners  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,17 +259,12 @@ toggleDarkModeBtn.addEventListener('click', () => {
     }
 });
 
-const closeModal = function () {
-    modalOverflow.classList.add('hidden');
-    let rightSide = modal.querySelector('.modal-right-side');
-    let leftSide = modal.querySelector('.modal-left-side');
-    modal.removeChild(rightSide);
-    modal.removeChild(leftSide);
-}
+closeModalBtn.addEventListener('click', function () {
+    clearModal();
+    closeModal();
+});
 
-closeModalBtn.addEventListener('click', closeModal);
-
-window.addEventListener('click', e => e.target == modal ? false : closeModal());
+// window.addEventListener('click', e => e.target == modal ? false : closeModal());
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
