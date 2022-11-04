@@ -107,7 +107,7 @@ nav {
     outline: none;
 }
 
-main {
+.main-div {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -293,4 +293,58 @@ main {
 
 .hidden {
     display: none;
+}
+
+/* MEDIA QUERIES //////////////////////////////////////////////////////////////////////////////////////*/
+@media only screen and (max-width: 550px) {
+    html {
+        font-size: 55%;
+    }
+
+    nav {
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .input-area {
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+
+    .modal-overflow {
+        padding: 0;
+    }
+
+    .modal {
+        flex-direction: column;
+        width: 98%;
+        height: 98%;
+    }
+
+    .modal-left-side {
+        width: 100%;
+    }
+
+    .modal-right-side {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    header {
+        padding: 1.8rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .toggle-dark-mode {
+        margin-left: 1rem;
+        font-size: 1.4rem;
+    }
+
+    .main-div {
+        padding: 0 2rem 2rem 2rem;
+    }
 }

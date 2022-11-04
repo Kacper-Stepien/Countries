@@ -50,7 +50,6 @@ const renderAllCountries = async function () {
             message = "You are offline. Connetct with Internet and try again.";
         }
         renderError(message);
-        console.log(message);
     }
 }
 
@@ -59,7 +58,6 @@ const addEventListenersToCards = function () {
     allCards.forEach(card => {
         card.addEventListener('click', function (e) {
             let element = e.target.closest('.card');
-            console.log(element.dataset.name);
             handleModal(element.dataset.name);
         });
     })
@@ -85,7 +83,6 @@ const renderAllCountriesFromRegion = async function (region) {
             message = "You are offline. Connetct with Internet and try again.";
         }
         renderError(message);
-        console.log(message);
     }
 }
 
@@ -97,7 +94,6 @@ const renderOneCountry = async function (country) {
             throw new Error("Ups... Country not found.");
         }
         const data = await response.json();
-        console.log(...data);
         const markup = createCountryMarkup(...data);
         mainDiv.insertAdjacentHTML('afterbegin', markup);
         addEventListenersToCards();
@@ -108,12 +104,10 @@ const renderOneCountry = async function (country) {
             message = "You are offline. Connetct with Internet and try again.";
         }
         renderError(message);
-        console.log(message);
     }
 }
 
 const createCountryMarkup = function (data) {
-    console.log(data);
     const markup = `
         <div class="card" data-name="${data.altSpellings[0]}">
             <div class="card-top-part">
@@ -127,7 +121,6 @@ const createCountryMarkup = function (data) {
             </div>
         </div>
     `;
-    console.log(markup);
     return markup;
 }
 
@@ -152,7 +145,6 @@ const init = function () {
 }
 
 const createModalMarkup = function (data) {
-    console.log(data);
     let markup = `
         <div div class="modal-left-side" >
             <img src="${data.flags.png}" alt="${data.name.common} flag" class="modal-photo">
@@ -235,7 +227,6 @@ searchInput.addEventListener('search', function (e) {
 
 filterInput.addEventListener('change', function () {
     const regionChoice = filterInput.value;
-    console.log(regionChoice);
     if (regionChoice === 'all') {
         renderAllCountries();
     }
@@ -264,7 +255,12 @@ closeModalBtn.addEventListener('click', function () {
     closeModal();
 });
 
-// window.addEventListener('click', e => e.target == modal ? false : closeModal());
+window.addEventListener('click', function (e) {
+    if (e.target == modalOverflow) {
+        clearModal();
+        closeModal();
+    }
+});
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
